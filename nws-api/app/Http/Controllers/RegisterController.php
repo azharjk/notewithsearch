@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Http\Resources\TokenResource;
+use App\Constants\TokenConstant;
 
 class RegisterController extends Controller
 {
@@ -33,7 +34,7 @@ class RegisterController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
-        $token = $user->createToken('auth_token');
+        $token = $user->createToken(TokenConstant::AUTH_TOKEN_NAME);
 
         return new TokenResource($token);
     }
