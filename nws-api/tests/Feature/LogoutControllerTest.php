@@ -52,7 +52,9 @@ class LogoutControllerTest extends TestCase
     {
         $response = $this->logoutResponse();
 
-        $response->assertJsonPath('message', 'Logged out');
+        $response->assertJson([
+            'message' => 'Logged out'
+        ]);
     }
 
     public function test_should_have_status_200()
