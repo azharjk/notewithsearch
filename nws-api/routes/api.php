@@ -18,11 +18,13 @@ use App\Http\Controllers\LoginController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/register', [RegisterController::class, 'index'])->name('register.index');
 Route::post('/login', [LoginController::class, 'index'])->name('login.index');
 
-Route::middleware('auth:sanctum')->post('/logout', [LogoutController::class, 'index'])->name('logout.index');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [LogoutController::class, 'index'])->name('logout.index');
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});
