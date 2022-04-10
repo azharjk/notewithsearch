@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,16 +12,17 @@ use App\Constants\TokenConstant;
 
 class LoginController extends Controller
 {
+    protected function a($data, array $rules)
+    {
+
+    }
+
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = $this->__validate($request->all(), [
             'username' => 'required',
             'password' => 'required'
         ]);
-
-        if ($validator->fails()) {
-            return Response::make($validator->errors(), 400);
-        }
 
         $validated = $validator->validated();
 

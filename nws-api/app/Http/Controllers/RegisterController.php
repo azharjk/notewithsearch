@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
@@ -15,16 +13,11 @@ class RegisterController extends Controller
 {
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = $this->__validate($request->all(), [
             'name' => 'required',
             'username' => 'required|unique:users|min:8',
             'password' => 'required|min:8'
         ]);
-
-
-        if ($validator->fails()) {
-            return Response::make($validator->errors(), 400);
-        }
 
         $validated = $validator->validated();
 
