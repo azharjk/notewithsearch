@@ -13,7 +13,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function __validate($data, array $rules)
+    public function __validate($data, array $rules)
     {
         $validator = Validator::make($data, $rules);
 
