@@ -12,11 +12,6 @@ use App\Constants\TokenConstant;
 
 class LoginController extends Controller
 {
-    protected function a($data, array $rules)
-    {
-
-    }
-
     public function index(Request $request)
     {
         $validator = $this->__validate($request->all(), [
