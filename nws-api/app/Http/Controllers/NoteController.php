@@ -9,6 +9,14 @@ use App\Http\Resources\NoteResource;
 
 class NoteController extends Controller
 {
+    public function index(Request $request)
+    {
+        // FIXME: Handle for a lot of notes (Pagination)
+        $notes = $request->user()->notes;
+
+        return NoteResource::collection($notes);
+    }
+
     public function show(Request $request, $id)
     {
         $note = $request->user()
