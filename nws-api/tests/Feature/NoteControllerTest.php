@@ -93,7 +93,8 @@ class NoteControllerTest extends TestCase
     protected function noteStoreResponse()
     {
         return $this->post(route(self::noteStoreRouteName), [
-            'title' => 'AnjayMabar'
+            'title' => 'AnjayMabar',
+            'content' => 'Triple digit'
         ]);
     }
 
@@ -118,10 +119,12 @@ class NoteControllerTest extends TestCase
     {
         $response = $this->noteStoreResponse();
 
-        $response->assertJsonPath(
-            'data.title',
-            'AnjayMabar'
-        );
+        $response->assertJson([
+            'data' => [
+                'title' => 'AnjayMabar',
+                'content' => 'Triple digit'
+            ]
+        ]);
     }
 
     public function test_should_response_with_note_when_validation_success()

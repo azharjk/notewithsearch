@@ -36,7 +36,8 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $validator = $this->__validate($request->all(), [
-            'title' => 'required|max:60'
+            'title' => 'required|max:60',
+            'content' => ''
         ]);
 
         $validated = $validator->validated();
