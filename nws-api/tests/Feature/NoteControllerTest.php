@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Note;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
@@ -14,14 +15,62 @@ class NoteControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $user;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        Sanctum::actingAs(User::factory()->create());
+        $this->user = User::factory()->create();
+
+        Sanctum::actingAs($this->user);
     }
 
+    protected const noteShowRouteName = 'note.show';
     protected const noteStoreRouteName = 'note.store';
+
+    public function test_should_have_status_404_when_note_not_found()
+    {
+        $response = $this->get(route(self::noteShowRouteName, 1));
+
+        $response->assertStatus(404);
+    }
+
+    public function test_should_response_with_not_found_msg_when_note_not_found()
+    {
+        $response = $this->get(route(self::noteShowRouteName, 1));
+
+        $response->assertJson([
+            'message' => 'Note you are looking for is not found'
+        ]);
+    }
+
+    protected function noteShowFoundResponse()
+    {
+        $this->user->notes()->create([
+            'title' => 'Meeting with HRD',
+            'content' => 'maybe success'
+        ]);
+
+        return $this->get(route(self::noteShowRouteName, Note::latest()->first()->id));
+    }
+
+    public function test_should_have_status_200_when_note_found()
+    {
+        $response = $this->noteShowFoundResponse();
+
+        $response->assertStatus(200);
+    }
+
+    public function test_should_response_with_note_when_note_found()
+    {
+        $response = $this->noteShowFoundResponse();
+
+        $response->assertJsonPath(
+            'data.title',
+            'Meeting with HRD'
+        );
+    }
 
     public function test_should_have_status_400_when_title_is_empty()
     {
