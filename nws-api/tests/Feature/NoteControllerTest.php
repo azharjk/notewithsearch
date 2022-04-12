@@ -26,8 +26,31 @@ class NoteControllerTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
+    protected const noteIndexRouteName = 'note.index';
     protected const noteShowRouteName = 'note.show';
     protected const noteStoreRouteName = 'note.store';
+
+    public function test_should_have_status_200_when_listing_a_notes()
+    {
+        $response = $this->get(route(self::noteIndexRouteName));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_should_response_with_list_of_notes()
+    {
+        $response = $this->get(route(self::noteIndexRouteName));
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'title',
+                    'content',
+                    'created_at'
+                ]
+            ]
+        ]);
+    }
 
     public function test_should_have_status_404_when_note_not_found()
     {
