@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 use App\Http\Resources\NoteResource;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class NoteController extends Controller
 {
@@ -64,30 +64,17 @@ class NoteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->checkExistence($request, $id);
+        $note = $this->checkExistence($request, $id);
 
         $validator = $this->__validateStoreNote($request->all());
 
         $validated = $validator->validated();
 
-        $success = $request->user()
-            ->notes()
-            ->where('id', $id)
-            ->update($validated);
+        $note->update($validated);
 
-        // The case just id not found
-        if (! $success) {
-            return Response::json([
-                'message' => 'There is some error when perform update'
-            ], 500);
-        }
-
-        $note = $request->user()
-            ->notes()
-            ->where('id', $id)
-            ->first();
-
-        return new NoteResource($note);
+        return Response::json([
+            'message' => 'Note update successfully'
+        ]);
     }
 
     public function destroy(Request $request, $id)
@@ -96,7 +83,7 @@ class NoteController extends Controller
 
         $note->delete();
 
-        return Response::make([
+        return Response::json([
             'message' => 'Note delete successfully'
         ]);
     }

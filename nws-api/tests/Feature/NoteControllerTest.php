@@ -206,6 +206,15 @@ class NoteControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_should_response_with_success_msg_when_update_successfully()
+    {
+        $response = $this->noteUpdateSuccessResponse();
+
+        $response->assertJson([
+            'message' => 'Note update successfully'
+        ]);
+    }
+
     public function test_should_update_the_note_when_update_successfully()
     {
         $this->noteUpdateSuccessResponse();
