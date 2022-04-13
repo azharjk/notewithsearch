@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Note;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
@@ -10,6 +9,7 @@ use Tests\TestCase;
 use Illuminate\Support\Str;
 
 use App\Models\User;
+use App\Models\Note;
 
 class NoteControllerTest extends TestCase
 {
@@ -29,6 +29,7 @@ class NoteControllerTest extends TestCase
     protected const noteIndexRouteName = 'note.index';
     protected const noteShowRouteName = 'note.show';
     protected const noteStoreRouteName = 'note.store';
+    protected const noteUpdateRouteName = 'note.update';
 
     public function test_should_have_status_200_when_listing_a_notes()
     {
@@ -160,6 +161,62 @@ class NoteControllerTest extends TestCase
                 'content',
                 'created_at'
             ]
+        ]);
+    }
+
+    public function test_should_have_status_404_when_note_is_not_found()
+    {
+        $response = $this->put(route(self::noteUpdateRouteName, 1));
+
+        $response->assertStatus(404);
+    }
+
+    protected function createNote()
+    {
+        return $this->user->notes()->create([
+            'title' => 'Monday',
+            'content' => 'IDK'
+        ]);
+    }
+
+    protected function noteUpdateSuccessResponse()
+    {
+        $note = $this->createNote();
+
+        return $this->put(route(self::noteUpdateRouteName, $note->id), [
+            'title' => 'Updated Monday',
+            'content' => 'I Know'
+        ]);
+    }
+
+    public function test_should_have_status_400_when_validation_fails()
+    {
+        $note = $this->createNote();
+
+        $response = $this->put(route(self::noteUpdateRouteName, $note->id));
+
+        $response->assertStatus(400);
+    }
+
+    public function test_should_have_status_200_when_update_successfully()
+    {
+        $response = $this->noteUpdateSuccessResponse();
+
+        $response->assertStatus(200);
+    }
+
+    public function test_should_update_the_note_when_update_successfully()
+    {
+        $this->noteUpdateSuccessResponse();
+
+        $this->assertDatabaseHas('notes', [
+            'title' => 'Updated Monday',
+            'content' => 'I Know'
+        ]);
+
+        $this->assertDatabaseMissing('notes', [
+            'title' => 'Monday',
+            'content' => 'I Know'
         ]);
     }
 }
