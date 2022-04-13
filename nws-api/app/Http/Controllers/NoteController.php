@@ -9,6 +9,23 @@ use App\Http\Resources\NoteResource;
 
 class NoteController extends Controller
 {
+    protected function __validateStoreNote($data)
+    {
+        $validator = $this->__validate($data, [
+            'title' => 'required|max:60',
+            'content' => ''
+        ]);
+
+        return $validator;
+    }
+
+    protected function responseNotNoteFound()
+    {
+        return Response::json([
+            'message' => 'Note you are looking for is not found'
+        ], 404);
+    }
+
     public function index(Request $request)
     {
         // FIXME: Handle for a lot of notes (Pagination)
@@ -25,9 +42,7 @@ class NoteController extends Controller
             ->first();
 
         if (! $note) {
-            return Response::json([
-                'message' => 'Note you are looking for is not found'
-            ], 404);
+            return $this->responseNotNoteFound();
         }
 
         return new NoteResource($note);
@@ -35,16 +50,48 @@ class NoteController extends Controller
 
     public function store(Request $request)
     {
-        $validator = $this->__validate($request->all(), [
-            'title' => 'required|max:60',
-            'content' => ''
-        ]);
+        $validator = $this->__validateStoreNote($request->all());
 
         $validated = $validator->validated();
 
         $note = $request->user()
             ->notes()
             ->create($validated);
+
+        return new NoteResource($note);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $exists = $request->user()
+            ->notes()
+            ->where('id', $id)
+            ->exists();
+
+        if (! $exists) {
+            return $this->responseNotNoteFound();
+        }
+
+        $validator = $this->__validateStoreNote($request->all());
+
+        $validated = $validator->validated();
+
+        $success = $request->user()
+            ->notes()
+            ->where('id', $id)
+            ->update($validated);
+
+        // The case just id not found
+        if (! $success) {
+            return Response::json([
+                'message' => 'There is some error when perform update'
+            ], 500);
+        }
+
+        $note = $request->user()
+            ->notes()
+            ->where('id', $id)
+            ->first();
 
         return new NoteResource($note);
     }
