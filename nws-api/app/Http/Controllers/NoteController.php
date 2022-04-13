@@ -19,6 +19,7 @@ class NoteController extends Controller
         return $validator;
     }
 
+    // FIXME: Maybe convert this to Throw Error
     protected function responseNotNoteFound()
     {
         return Response::json([
