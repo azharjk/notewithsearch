@@ -30,6 +30,7 @@ class NoteControllerTest extends TestCase
     protected const noteShowRouteName = 'note.show';
     protected const noteStoreRouteName = 'note.store';
     protected const noteUpdateRouteName = 'note.update';
+    protected const noteDestroyRouteName = 'note.destroy';
 
     public function test_should_have_status_200_when_listing_a_notes()
     {
@@ -217,6 +218,39 @@ class NoteControllerTest extends TestCase
         $this->assertDatabaseMissing('notes', [
             'title' => 'Monday',
             'content' => 'I Know'
+        ]);
+    }
+
+    public function test_should_have_status_404_when_note_deletion_is_not_found()
+    {
+        $response = $this->delete(route(self::noteDestroyRouteName, 1));
+
+        $response->assertStatus(404);
+    }
+
+    public function test_should_response_with_msg_success_when_delete_successfully()
+    {
+        $note = $this->createNote();
+
+        $response = $this->delete(route(self::noteDestroyRouteName, $note->id));
+
+        $response->assertJson([
+            'message' => 'Note delete successfully'
+        ]);
+    }
+
+    public function test_should_missing_note_when_delete_successfully()
+    {
+        $note = $this->createNote();
+
+        $this->assertDatabaseHas('notes', [
+            'title' => 'Monday'
+        ]);
+
+        $this->delete(route(self::noteDestroyRouteName, $note->id));
+
+        $this->assertDatabaseMissing('notes', [
+            'title' => 'Monday'
         ]);
     }
 }
