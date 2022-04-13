@@ -96,4 +96,22 @@ class NoteController extends Controller
 
         return new NoteResource($note);
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $note = $request->user()
+            ->notes()
+            ->where('id', $id)
+            ->first();
+
+        if (! $note) {
+            return $this->responseNotNoteFound();
+        }
+
+        $note->delete();
+
+        return Response::make([
+            'message' => 'Note delete successfully'
+        ]);
+    }
 }

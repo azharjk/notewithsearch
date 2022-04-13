@@ -33,4 +33,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notes/{id}', [NoteController::class, 'show'])->name('note.show');
     Route::post('/notes', [NoteController::class, 'store'])->name('note.store');
     Route::put('/notes/{id}', [NoteController::class, 'update'])->name('note.update');
+    Route::delete('/notes/{id}', [NoteController::class, 'destroy'])->name('note.destroy');
 });
