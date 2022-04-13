@@ -29,9 +29,5 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::get('/notes', [NoteController::class, 'index'])->name('note.index');
-    Route::get('/notes/{id}', [NoteController::class, 'show'])->name('note.show');
-    Route::post('/notes', [NoteController::class, 'store'])->name('note.store');
-    Route::put('/notes/{id}', [NoteController::class, 'update'])->name('note.update');
-    Route::delete('/notes/{id}', [NoteController::class, 'destroy'])->name('note.destroy');
+    Route::apiResource('notes', NoteController::class);
 });

@@ -26,11 +26,11 @@ class NoteControllerTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    protected const noteIndexRouteName = 'note.index';
-    protected const noteShowRouteName = 'note.show';
-    protected const noteStoreRouteName = 'note.store';
-    protected const noteUpdateRouteName = 'note.update';
-    protected const noteDestroyRouteName = 'note.destroy';
+    protected const noteIndexRouteName = 'notes.index';
+    protected const noteShowRouteName = 'notes.show';
+    protected const noteStoreRouteName = 'notes.store';
+    protected const noteUpdateRouteName = 'notes.update';
+    protected const noteDestroyRouteName = 'notes.destroy';
 
     public function test_should_have_status_200_when_listing_a_notes()
     {
