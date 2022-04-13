@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 use App\Http\Resources\NoteResource;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class NoteController extends Controller
 {
@@ -19,12 +20,18 @@ class NoteController extends Controller
         return $validator;
     }
 
-    // FIXME: Maybe convert this to Throw Error
-    protected function responseNotNoteFound()
+    protected function checkExistence(Request $request, $id)
     {
-        return Response::json([
-            'message' => 'Note you are looking for is not found'
-        ], 404);
+        $note = $request->user()
+            ->notes()
+            ->where('id', $id)
+            ->first();
+
+        if (! $note) {
+            throw new ResourceNotFoundException('Note you are looking for is not found');
+        }
+
+        return $note;
     }
 
     public function index(Request $request)
@@ -37,14 +44,7 @@ class NoteController extends Controller
 
     public function show(Request $request, $id)
     {
-        $note = $request->user()
-            ->notes()
-            ->where('id', $id)
-            ->first();
-
-        if (! $note) {
-            return $this->responseNotNoteFound();
-        }
+        $note = $this->checkExistence($request, $id);
 
         return new NoteResource($note);
     }
@@ -64,14 +64,7 @@ class NoteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $exists = $request->user()
-            ->notes()
-            ->where('id', $id)
-            ->exists();
-
-        if (! $exists) {
-            return $this->responseNotNoteFound();
-        }
+        $this->checkExistence($request, $id);
 
         $validator = $this->__validateStoreNote($request->all());
 
@@ -99,14 +92,7 @@ class NoteController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $note = $request->user()
-            ->notes()
-            ->where('id', $id)
-            ->first();
-
-        if (! $note) {
-            return $this->responseNotNoteFound();
-        }
+        $note = $this->checkExistence($request, $id);
 
         $note->delete();
 

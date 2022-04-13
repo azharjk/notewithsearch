@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -42,6 +43,10 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (BadRequestException $e, $request) {
             return Response::json(json_decode($e->getMessage()), 400);
+        });
+
+        $this->renderable(function (ResourceNotFoundException $e, $request) {
+            return Response::json(['message' => $e->getMessage()], 404);
         });
     }
 }
