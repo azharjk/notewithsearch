@@ -46,6 +46,7 @@ class NoteControllerTest extends TestCase
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
+                    'id',
                     'title',
                     'content',
                     'created_at'
@@ -158,6 +159,7 @@ class NoteControllerTest extends TestCase
 
         $response->assertJsonStructure([
             'data' => [
+                'id',
                 'title',
                 'content',
                 'created_at'
