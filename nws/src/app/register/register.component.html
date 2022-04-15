@@ -5,7 +5,7 @@
   </div>
 
   <div class="center-container">
-    <form action="" class="form">
+    <form [formGroup]="registerForm" (ngSubmit)="handleSubmit()" class="form">
       <div class="form-control">
         <label for="name">Name</label>
         <input
@@ -13,6 +13,7 @@
           placeholder="Enter name"
           type="text"
           id="name"
+          formControlName="name"
         />
       </div>
       <div class="form-control hidden">
@@ -22,6 +23,7 @@
           placeholder="Enter username"
           type="text"
           id="username"
+          formControlName="username"
         />
       </div>
       <div class="form-control hidden">
@@ -31,11 +33,29 @@
           placeholder="Enter password"
           type="password"
           id="password"
+          formControlName="password"
+        />
+      </div>
+      <div class="form-control hidden">
+        <label for="confirm-password">Confirm Password</label>
+        <input
+          class="form-control__input"
+          placeholder="Enter confirm password"
+          type="password"
+          id="confirm-password"
+          formControlName="confirmPassword"
         />
       </div>
       <div class="form-footer">
         <a href="">Log in instead</a>
-        <button class="button" type="button">Next</button>
+        <button
+          #buttonControl
+          class="button"
+          type="button"
+          (click)="handleNextButton()"
+        >
+          Next
+        </button>
       </div>
     </form>
   </div>
