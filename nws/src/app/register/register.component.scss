@@ -5,8 +5,10 @@
 }
 
 .center-container {
+  width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 5rem;
 }
 
@@ -20,6 +22,7 @@
 
 .form {
   width: 100%;
+  max-width: 25rem;
   display: flex;
   flex-direction: column;
   gap: 3rem;
