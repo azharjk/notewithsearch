@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +18,7 @@ export class RegisterComponent implements AfterViewInit {
 
   constructor(private fb: FormBuilder) {
     this.registerForm = fb.group({
-      name: fb.control(''),
+      name: fb.control('', [Validators.required]),
       username: fb.control(''),
       password: fb.control(''),
       confirmPassword: fb.control('')
@@ -37,6 +37,17 @@ export class RegisterComponent implements AfterViewInit {
     }
 
     if (this.formControlIndex + 1 >= this.formControls.length) {
+      return;
+    }
+
+    const key = Object.keys(this.registerForm.controls)[this.formControlIndex];
+    const control = this.registerForm.controls[key];
+
+    if (control.invalid) {
+      const input = this.formControls[this.formControlIndex].querySelector('input') as HTMLInputElement;
+      const errorSpan = this.formControls[this.formControlIndex].querySelector('.form-control__error') as HTMLSpanElement;
+      input.classList.add('input-invalid');
+      errorSpan.classList.remove('hidden');
       return;
     }
 
